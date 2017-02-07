@@ -22,7 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "cross-env NODE_ENV=test ava",
+    "test": "cross-env NODE_ENV=test ava --verbose",
     "eject": "react-scripts eject"
   },
   "babel": {
@@ -30,6 +30,7 @@
   },
   "ava": {
     "babel": "inherit",
+    "concurrency": 20,
     "require": [
       "babel-register",
       "ignore-styles",
