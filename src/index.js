@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import App from './components/App';
 import './styles/index.css';
 
 import configureStore from './configureStore';
-import { toggleTodo } from './actions/todo.action';
+import { toggleTodo } from './actions/Todo.action';
 
 const store = configureStore({
 	todos: [
@@ -17,6 +18,8 @@ const store = configureStore({
 store.dispatch(toggleTodo(1));
 
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+  	<App />
+  </Provider>,
   document.getElementById('root')
 );

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { TOGGLE_TODO } from '../actions/todo.action';
+import { TOGGLE_TODO } from '../actions/Todo.action';
 
 export const todos = (state = [], action) => {
 	switch (action.type) {
