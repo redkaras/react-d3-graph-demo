@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 class GraphDemo extends Component {
 	constructor(props) {
 		super(props);
-		console.log(d3);
+		this.url = "http://localhost:3001/getDemoGraph/589e535c8f5b09393861ab1c";
 	}
 
 	componentWillMount() {
@@ -15,8 +15,8 @@ class GraphDemo extends Component {
 		return (
 			<svg>
 				<g transform="translate(10, 20)">
-					<rect width="800" height="600" stroke="black" fill="green" />
-					<circle cx="100" cy="50" r="50" stroke="black"  fill="red"/>
+					<rect width="800" height="600" stroke="black" fill="black" />
+					<circle cx="400" cy="300" r="300" stroke="black"  fill="red"/>
 				</g>
 			</svg>
 		);

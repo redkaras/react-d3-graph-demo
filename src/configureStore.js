@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import rootReducer from './reducers/todo.reducer.js';
+import rootReducer from './reducers/Todo.reducer.js';
 import createLogger from 'redux-logger';
 
 export default function configureStore(initialState) {

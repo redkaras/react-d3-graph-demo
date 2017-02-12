@@ -1,6 +1,6 @@
 import test from 'ava';
-import { todos } from '../../src/reducers/todo.reducer';
-import { toggleTodo } from '../../src/actions/todo.action';
+import { todos } from '../../src/reducers/Todo.reducer';
+import { toggleTodo } from '../../src/actions/Todo.action';
 
 test('todo reducer', t => {
 	t.deepEqual(todos([
