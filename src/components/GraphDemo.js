@@ -42,19 +42,22 @@ class GraphDemo extends Component {
 		nodeMap[_key] = newNode;
 
 		for (let key in node) {
-			let attribute = node[key];
-			if (typeof attribute === "object") {
-				let attrKey = key + "_" + node[key].id;
-				if (!nodeMap[attrKey]) {
-					nodeMap[attrKey] = {
-						"id": node[key].id,
-						"name": node[key].name,
-						"refNum": 0,
-						"nextTo": {_key: key}
-					};
+			if (node[key]) {
+				let attribute = node[key];
+				if (typeof attribute === "object") {
+					let attrKey = key + "_" + (node[key].phone && typeof node[key].phone === "object" ? node[key].phone.id : node[key].id);
+					if (!nodeMap[attrKey]) {
+						nodeMap[attrKey] = {
+							"id": node[key].id,
+							"name": node[key].name || node[key].colleagueName || node[key].familyName || node[key].friendName,
+							"refNum": 0,
+							"nextTo": {}
+						};
+						nodeMap[attrKey].nextTo[_key] = true;
+					}
+					newNode.nextTo[attrKey] = true;
+					nodeMap[attrKey].nextTo[_key] = true;
 				}
-				newNode.nextTo[attrKey] = true;
-				nodeMap[attrKey].nextTo[_key] = true;
 			}
 		}
 	}
@@ -80,7 +83,7 @@ class GraphDemo extends Component {
 	}
 
 	initD3Graph(data) {
-		let svg = this.refs.directedGraph;
+		// let svg = this.refs.directedGraph;
 
 		let simulation = d3.forceSimulation()
 			.force("link", d3.forceLink().id(d => d.id))
@@ -111,7 +114,7 @@ class GraphDemo extends Component {
 					{this.state.links.map(link => (<line key={link.id} x1={this.state.nodes[link.source].x} y1={this.state.nodes[link.source].y} x2={this.state.nodes[link.target].x} y2={this.state.nodes[link.target].y} />))}
 				</g>
 				<g className="nodes">
-					{this.state.nodes.map(node => (<g><circle key={node.id} cx={node.x} cy={node.y} r={20} /> <text x={node.x - 10} y={node.y - 20}>{node.text}</text></g> ))};
+					{this.state.nodes.map(node => (<g key={"g" + node.id}><circle key={node.id} cx={node.x} cy={node.y} r={20} /> <text x={node.x - 10} y={node.y - 20}>{node.text}</text></g> ))};
 				</g>		
 			</svg>
 		);
