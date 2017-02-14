@@ -19,23 +19,26 @@ class GraphDemo extends Component {
 	}
 
 	componentWillMount() {
-		fetch(this.url)
-			.then(response => response.json())
-			.then(response => this.formatGraphData(response))
-			.then(data => this.initD3Graph(data))
+		// fetch(this.url)
+		// 	.then(response => response.json())
+		// 	.then(response => this.formatGraphData(response))
+		// 	.then(data => this.initD3Graph(data))
 			// .catch(err => console.log(err.message))
 
 		fetch(this.jsonUrl)
 			.then(response => response.json())
-			.then(response => this.preprocessData(response));
-
+			.then(response => this.preprocessData(response))
+			.then(response => this.bfsSearch(response, "38485_夏舒征", 4))
+			.then(response => ({ graph: response}))
+			.then(response => this.formatGraphData(response))
+			.then(data => this.initD3Graph(data));
 	}
 
 	processOneNode(nodeMap, node) {
 		let _key = node.id + "_" + node.name;
 		let newNode = {
-			id: node.id,
-			name: node.name,
+			_id: node.id,
+			text: node.name,
 			refNum: 0,
 			nextTo: {}
 		};
@@ -48,8 +51,8 @@ class GraphDemo extends Component {
 					let attrKey = key + "_" + (node[key].phone && typeof node[key].phone === "object" ? node[key].phone.id : node[key].id);
 					if (!nodeMap[attrKey]) {
 						nodeMap[attrKey] = {
-							"id": node[key].id,
-							"name": node[key].name || node[key].colleagueName || node[key].familyName || node[key].friendName,
+							"_id": node[key].id,
+							"text": node[key].name || node[key].colleagueName || node[key].familyName || node[key].friendName,
 							"refNum": 0,
 							"nextTo": {}
 						};
@@ -67,12 +70,59 @@ class GraphDemo extends Component {
 		for (let i = 0; i < rawData.length; i++) {
 			this.processOneNode(nodeMap, rawData[i]);
 		}
-		console.log(nodeMap);
+		return nodeMap;
+	}
+
+	bfsSearch(graph, rootKey, level) {
+		let result = {
+			nodes: [],
+			links: []
+		};
+		let visited = {};
+		let currentLevel = [rootKey];
+
+		while (level-- > 0 && currentLevel.length > 0) {
+			let nextLevel = [];
+			for (let i = 0; i < currentLevel.length; i++) {
+				let _key = currentLevel[i];
+				if (visited[_key]) continue;
+
+				let node = graph[_key];
+				node.index = result.nodes.length;
+				result.nodes.push(node);
+
+				visited[_key] = true;
+				for (let nextKey in node.nextTo) {
+					if (visited[nextKey]) continue;
+					nextLevel.push(nextKey);
+					result.links.push({ from: _key, to: nextKey, _id: _key + "_" + nextKey, text: _key + " -> " + nextKey });
+				}
+			}
+
+			currentLevel = nextLevel;
+		}
+
+		for (let index in currentLevel) {
+			let _key = currentLevel[index];
+			if (!visited[_key]) {
+				visited[_key] = true;
+				graph[_key].index = result.nodes.length;
+				result.nodes.push(graph[_key]);
+			}
+		}
+
+		for (let index in result.links) {
+			let link = result.links[index];
+			link.from = graph[link.from].index;
+			link.to = graph[link.to].index;
+		}
+
+		return result;
 	}
 
 	formatGraphData(dataObject) {
 		return {
-			nodes: dataObject.graph.nodes.map( node => ({ id: node._id, text: node.text}) ),
+			nodes: dataObject.graph.nodes.map( node => ({ id: node._id , text: node.text }) ),
 			links: dataObject.graph.links.map( link => ({
 				source: link.from,
 				target: link.to,
@@ -107,15 +157,27 @@ class GraphDemo extends Component {
 		this.setState(this.state);
 	}
 
-	render() {
+	render() {		
 		return (
-			<svg ref="directedGraph" width="800" height="600">
+			<svg ref="directedGraph" width="1000" height="800">
 				<g className="links">
-					{this.state.links.map(link => (<line key={link.id} x1={this.state.nodes[link.source].x} y1={this.state.nodes[link.source].y} x2={this.state.nodes[link.target].x} y2={this.state.nodes[link.target].y} />))}
+					{this.state.links.map(link => (
+						<line
+							key={link.id}
+							x1={this.state.nodes[link.source].x}
+							y1={this.state.nodes[link.source].y}
+							x2={this.state.nodes[link.target].x}
+							y2={this.state.nodes[link.target].y} />
+					))}
 				</g>
 				<g className="nodes">
-					{this.state.nodes.map(node => (<g key={"g" + node.id}><circle key={node.id} cx={node.x} cy={node.y} r={20} /> <text x={node.x - 10} y={node.y - 20}>{node.text}</text></g> ))};
-				</g>		
+					{this.state.nodes.map(node => (
+						<g key={"g_" + node.id}>
+							<circle key={node.id} cx={node.x} cy={node.y} r={15} />
+							<text x={node.x - 10} y={node.y - 20}>{node.text}</text>
+						</g>
+					))};
+				</g>
 			</svg>
 		);
 	}
