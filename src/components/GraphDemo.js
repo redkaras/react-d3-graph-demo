@@ -27,22 +27,34 @@ class GraphDemo extends Component {
 
 		fetch(this.jsonUrl)
 			.then(response => response.json())
-			.then(response => console.log(response));
+			.then(response => this.preprocessData(response));
 
 	}
 
 	processOneNode(nodeMap, node) {
 		let _key = node.id + "_" + node.name;
-		nodeMap[_key] = node;
-		node.refNum = 0;
+		let newNode = {
+			id: node.id,
+			name: node.name,
+			refNum: 0,
+			nextTo: {}
+		};
+		nodeMap[_key] = newNode;
 
 		for (let key in node) {
 			let attribute = node[key];
 			if (typeof attribute === "object") {
-				let attrKey = key + "_" + node[key].id + "_" + node[key].name;
-				if (nodeMap[attrKey]) {
-					//pass;
+				let attrKey = key + "_" + node[key].id;
+				if (!nodeMap[attrKey]) {
+					nodeMap[attrKey] = {
+						"id": node[key].id,
+						"name": node[key].name,
+						"refNum": 0,
+						"nextTo": {_key: key}
+					};
 				}
+				newNode.nextTo[attrKey] = true;
+				nodeMap[attrKey].nextTo[_key] = true;
 			}
 		}
 	}
