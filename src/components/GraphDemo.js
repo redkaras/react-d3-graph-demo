@@ -40,7 +40,8 @@ class GraphDemo extends Component {
 			_id: node.id,
 			text: node.name,
 			refNum: 0,
-			nextTo: {}
+			nextTo: {},
+			type: "main"
 		};
 		nodeMap[_key] = newNode;
 
@@ -51,14 +52,16 @@ class GraphDemo extends Component {
 					let attrKey = key + "_" + (node[key].phone && typeof node[key].phone === "object" ? node[key].phone.id : node[key].id);
 					if (!nodeMap[attrKey]) {
 						nodeMap[attrKey] = {
-							"_id": node[key].id,
-							"text": node[key].name || node[key].colleagueName || node[key].familyName || node[key].friendName,
-							"refNum": 0,
-							"nextTo": {}
+							_id: node[key].id,
+							text: node[key].name || node[key].colleagueName || node[key].familyName || node[key].friendName,
+							refNum: 0,
+							nextTo: {},
+							type: "attr"
 						};
-						nodeMap[attrKey].nextTo[_key] = true;
 					}
+					if (!newNode.nextTo[attrKey]) newNode.refNum++;
 					newNode.nextTo[attrKey] = true;
+					if (!nodeMap[attrKey].nextTo[_key]) nodeMap[attrKey].refNum++;
 					nodeMap[attrKey].nextTo[_key] = true;
 				}
 			}
