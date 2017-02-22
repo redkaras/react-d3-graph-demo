@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import dagre from 'dagre';
-import dagreD3 from 'dagre-d3';
 import fetch from 'isomorphic-fetch';
 require('es6-promise').polyfill();
 
@@ -19,7 +18,14 @@ class GraphDemo extends Component {
 			links: []
 		}
 		this.count = 0;
-		this.renderSVG = new dagreD3.render();
+	}
+
+	componentWillMount() {
+		// fetch(this.url)
+		// 	.then(response => response.json())
+		// 	.then(response => this.formatGraphData(response))
+		// 	.then(data => this.initD3Graph(data))
+			// .catch(err => console.log(err.message))
 
 		fetch(this.jsonUrl)
 			.then(response => response.json())
@@ -141,9 +147,7 @@ class GraphDemo extends Component {
 		});
 
 		dagre.layout(g);
-		// let svg = d3.select("svg");
-		// svg.append("g");
-		// this.renderSVG(d3.select("svg g"), g);
+
 		return {
 			nodes: Object.keys(g._nodes).map(k => g._nodes[k]).map( node => ({ id: node.id , text: node.text, x: node.x, y: node.y }) ),
 			links: dataObject.graph.links.map( link => ({
@@ -161,7 +165,7 @@ class GraphDemo extends Component {
 		let simulation = d3.forceSimulation()
 			.force("link", d3.forceLink().id(d => d.id))
 			.force("charge", d3.forceManyBody())
-			.force("center", d3.forceCenter(this.width / 3 + 50, this.height / 2 + 100));
+			.force("center", d3.forceCenter(this.width / 2, this.height / 2 + 100));
 		let that = this;
 		function close() {
 			console.log("close");
@@ -193,12 +197,6 @@ class GraphDemo extends Component {
 				// 			y2={this.state.nodes[link.target].y} />
 				// 	))}
 				// </g>
-	// render() {		
-	// 	return (
-	// 		<svg ref="directedGraph" width="1400" height="1800">
-	// 		</svg>
-	// 	);
-	// }
 	render() {		
 		return (
 			<svg ref="directedGraph" width="1400" height="1800">

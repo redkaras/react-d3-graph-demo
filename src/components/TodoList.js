@@ -4,7 +4,7 @@ import Todo from './Todo';
 import { toggleTodo } from '../actions/Todo.action';
 
 const TodoList = props => (
-	<ul style={{ textAlign: 'left' }}>
+  <ul style={{ textAlign: 'left' }}>
 		{props.todos.map(todo => (
 			<Todo
 				key={todo.id}
@@ -24,9 +24,10 @@ TodoList.propTypes = {
 	toggleTodo: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
 	return {
-		todos: state.todos
+		id: ownProps.params.id,
+		todos: ownProps.todos
 	};
 };
 

@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import logo from '../styles/logo.svg';
-import '../styles/App.css';
-
+import { Link, browserHistory } from 'react-router';
 // import TodoList from './TodoList';
-import GraphDemo from './GraphDemo';
+// import GraphDemo from './GraphDemo';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>React d3 graph demo</h2>
-        </div>
-        <GraphDemo />
+export default function App({ children }) {
+  return (
+    <div>
+      <header>
+        Links:
+        {' '}
+        <Link to="/Test">Test</Link>
+        {' '}
+        <Link to="/GraphDemo">Graph</Link>
+      </header>
+      <div>
+        <button onClick={() => browserHistory.push('/TodoList')}>Go to /foo</button>
       </div>
-    );
-  }
+      <div style={{ marginTop: '1.5em' }}>{children}</div>
+    </div>
+  )
 }
-
-export default App;

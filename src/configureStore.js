@@ -1,4 +1,6 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { routerReducer } from 'react-router-redux'
+
 import rootReducer from './reducers/Todo.reducer.js';
 import createLogger from 'redux-logger';
 
@@ -8,8 +10,10 @@ export default function configureStore(initialState) {
 	].concat(process.env.NODE_ENV === 'development' ? [createLogger()] : []);
 
 	const store = createStore(
-		rootReducer,
-		initialState,
+		combineReducers({
+	    ...rootReducer,
+	    routing: routerReducer
+	  }),
 		applyMiddleware(...middleware)
 	);
 

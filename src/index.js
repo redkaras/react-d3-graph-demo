@@ -1,11 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import App from './components/App';
-import './styles/index.css';
 
 import configureStore from './configureStore';
 import { toggleTodo } from './actions/Todo.action';
+
+import { Router, Route, browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
+
+import './styles/index.css';
+import logo from './styles/logo.svg';
+import './styles/App.css';
+
+import routes from './routes';
 
 const store = configureStore({
 	todos: [
@@ -15,11 +22,18 @@ const store = configureStore({
 	]
 });
 
-store.dispatch(toggleTodo(1));
+//store.dispatch(toggleTodo(1));
+const history = syncHistoryWithStore(browserHistory, store)
 
 ReactDOM.render(
   <Provider store={store}>
-  	<App />
+      <div className="App">
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h2>React d3 graph demo</h2>
+        </div>
+        <Router history={history} routes={routes} />
+      </div>
   </Provider>,
   document.getElementById('root')
 );
