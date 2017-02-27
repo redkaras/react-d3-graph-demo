@@ -23,8 +23,8 @@ const store = configureStore({
 });
 
 //store.dispatch(toggleTodo(1));
-const history = syncHistoryWithStore(browserHistory, store)
-
+const history = syncHistoryWithStore(browserHistory, store);
+// history.listen(location => alert(location.pathname));
 ReactDOM.render(
   <Provider store={store}>
       <div className="App">

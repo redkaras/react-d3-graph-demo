@@ -18,15 +18,15 @@
   font-size: large;
 }
 
-.links line {
-  stroke: #999;
+.links path {
+  stroke: #888;
   stroke-opacity: 0.6;
 }
 
 .nodes circle {
-  stroke: #fff;
+  stroke: #333;
   stroke-width: 1.5px;
-  fill: #f33;
+  fill: #888;
 }
 
 @keyframes App-logo-spin {

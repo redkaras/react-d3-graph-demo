@@ -9,11 +9,14 @@ export default function configureStore(initialState) {
 		// add common middleware
 	].concat(process.env.NODE_ENV === 'development' ? [createLogger()] : []);
 
+	const reducer = combineReducers({
+    todo: rootReducer,
+    routing: routerReducer
+  });
+
 	const store = createStore(
-		combineReducers({
-	    ...rootReducer,
-	    routing: routerReducer
-	  }),
+		reducer,
+	  initialState,
 		applyMiddleware(...middleware)
 	);
 

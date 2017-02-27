@@ -18,6 +18,7 @@ class GraphDemo extends Component {
 			nodes: [],
 			links: []
 		}
+
 		this.count = 0;
 		this.renderSVG = new dagreD3.render();
 
@@ -128,7 +129,7 @@ class GraphDemo extends Component {
 		g.setGraph({});
 		g.setDefaultEdgeLabel(() => ({}));
 		g.graph().rankdir = "LR";
-		g.graph().nodesep = 10;
+		g.graph().nodesep = 20;
 		g.graph().edgesep = 20;
 		g.graph().ranksep = 150;
 		
@@ -141,16 +142,27 @@ class GraphDemo extends Component {
 		});
 
 		dagre.layout(g);
-		// let svg = d3.select("svg");
-		// svg.append("g");
-		// this.renderSVG(d3.select("svg g"), g);
+		var reg = /[^\w]/g;
+		function convertToAlphabetaKeyObject(obj, reg) {
+			var result = {};
+			for (var key in obj) {
+				var keyArray = key.split(reg);
+				var newKey = keyArray[0] + "->" + keyArray[1];
+				result[newKey] = obj[key];
+			}
+			return result;
+		}
+
+		g._alphabetaEdgeLabels = convertToAlphabetaKeyObject(g._edgeLabels, reg);
+
 		return {
 			nodes: Object.keys(g._nodes).map(k => g._nodes[k]).map( node => ({ id: node.id , text: node.text, x: node.x, y: node.y }) ),
 			links: dataObject.graph.links.map( link => ({
 				source: link.from,
 				target: link.to,
 				id: link._id,
-				text: link.text
+				text: link.text,
+				points: g._alphabetaEdgeLabels[link.from + "->" + link.to].points
 			}) )
 		};
 	}
@@ -158,17 +170,17 @@ class GraphDemo extends Component {
 	initD3Graph(data) {
 		// let svg = this.refs.directedGraph;
 
-		let simulation = d3.forceSimulation()
-			.force("link", d3.forceLink().id(d => d.id))
-			.force("charge", d3.forceManyBody())
-			.force("center", d3.forceCenter(this.width / 3 + 50, this.height / 2 + 100));
-		let that = this;
-		function close() {
-			console.log("close");
-			that.ticked();
-		}
-		simulation.nodes(data.nodes).on("tick", close);
-		simulation.force(data.links);
+		// let simulation = d3.forceSimulation()
+		// 	.force("link", d3.forceLink().id(d => d.id))
+		// 	.force("charge", d3.forceManyBody())
+		// 	.force("center", d3.forceCenter(this.width / 3 + 50, this.height / 2 + 100));
+		// let that = this;
+		// function close() {
+		// 	console.log("close");
+		// 	that.ticked();
+		// }
+		// simulation.nodes(data.nodes).on("tick", close);
+		// simulation.force(data.links);
 
 		this.setState({
 			nodes: data.nodes,
@@ -217,7 +229,7 @@ class GraphDemo extends Component {
 							stroke="blue"
 							strokeWidth="2"
 							fill="none" 
-							d={ "M " + this.state.nodes[link.source].x + " " + this.state.nodes[link.source].y + " L " + this.state.nodes[link.target].x + " " + this.state.nodes[link.target].y }
+							d={ "M " + link.points[0].x + " " + link.points[0].y + " Q " + link.points[1].x + " " + link.points[1].y + "  " + link.points[2].x + " " + link.points[2].y }
 							markerEnd="url(#idArrow)" />
 					))}
 				</g>

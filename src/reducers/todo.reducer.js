@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
-import { TOGGLE_TODO } from '../actions/Todo.action';
+import { ADD_TODO, TOGGLE_TODO, addTodo,  } from '../actions/Todo.action';
 
-export const todos = (state = [], action) => {
+const initialState = [];
+
+export default function todos(state = initialState, action)  {
 	switch (action.type) {
 		case TOGGLE_TODO:
 			return state.map(t => {
@@ -10,9 +12,12 @@ export const todos = (state = [], action) => {
 				}
 				return t;
 			});
+		case ADD_TODO:
+			return state.concat({
+					...action.payload,
+					completed: false
+				});
 		default:
 			return state;
 	}
 };
-
-export default combineReducers({ todos });

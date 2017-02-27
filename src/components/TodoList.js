@@ -1,18 +1,23 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Todo from './Todo';
-import { toggleTodo } from '../actions/Todo.action';
+import AddTodo from './AddTodo';
+import { addTodo, toggleTodo } from '../actions/Todo.action';
 
 const TodoList = props => (
-  <ul style={{ textAlign: 'left' }}>
-		{props.todos.map(todo => (
-			<Todo
-				key={todo.id}
-				{...todo}
-				onToggle={props.toggleTodo}
-			/>
-		))}
-	</ul>
+	<div>
+		<AddTodo {...props} onAddTodo={props.addTodo} />
+	  <ul style={{ textAlign: 'left' }}>
+			{props.todos.map(todo => (
+				<Todo
+					key={todo.id}
+					{...todo}
+					onToggle={props.toggleTodo}
+				/>
+			))}
+		</ul>
+		
+	</div>
 );
 
 TodoList.propTypes = {
@@ -22,21 +27,21 @@ TodoList.propTypes = {
 		completed: PropTypes.bool.isRequired,
 	})).isRequired,
 	toggleTodo: PropTypes.func.isRequired,
+	routing: PropTypes.Any
 };
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
 	return {
-		id: ownProps.params.id,
-		todos: ownProps.todos
+		todos: state.todo
 	};
 };
 
 const actionCreators = {
-	toggleTodo
+	toggleTodo,
+	addTodo
 };
 
 export default connect(
 	mapStateToProps,
 	actionCreators
 )(TodoList);
-

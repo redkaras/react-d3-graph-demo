@@ -3,10 +3,9 @@ import React, { PropTypes, Component } from 'react';
 class Todo extends Component {
 	constructor(props) {
 		super(props);
-		this._onClick = this._onClick.bind(this);
 	}
 
-	_onClick() {
+	onClick() {
 		this.props.onToggle(this.props.id);
 	}
 
@@ -14,7 +13,7 @@ class Todo extends Component {
 		return (
 			<li
 				style={{textDecoration: this.props.completed ? 'line-through': 'none'}}
-				onClick={this._onClick}
+				onClick={this.onClick.bind(this)}
 			>
 				{this.props.text}
 			</li>
